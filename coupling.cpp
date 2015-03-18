@@ -64,6 +64,7 @@ Coupling::Coupling(void) : DefaultGUIModel("Reciprocal Coupling", ::vars, ::num_
 	customizeGUI();
 	update(INIT);
 	refresh();
+	QTimer::singleShot(0, this, SLOT(resizeMe()));
 }
 
 Coupling::~Coupling(void) {}
@@ -102,8 +103,10 @@ void Coupling::execute(void) {
 			cell2spktime = systime;
 			phasediff = cell2spktime - cell1spktime;
 			if (automate == true && fabs(phasediff-Couplingdelay) < tolerance) { // tolerance of 1 ms
-				coupleBttn->setChecked(true);
-				mode = COUPLED;
+				CouplingEvent event(this, true);
+				RT::System::getInstance()->postEvent(&event);
+//				coupleBttn->setChecked(true);
+//				mode = COUPLED;
 			}
 		}
 	}
@@ -224,15 +227,12 @@ void Coupling::customizeGUI(void) {
 	coupleBttn->setToolTip("Manually turn on synapses to couple neurons.");
 	QObject::connect(coupleBttn, SIGNAL(toggled(bool)), this, SLOT(startCoupling(bool)));
 	
-	//	QGroupBox *optionBox = new QGroupBox;
 	QHBoxLayout *optionBoxLayout = new QHBoxLayout;
-	//	optionBox->setLayout(optionBoxLayout);
 	QCheckBox *automateCheckBox = new QCheckBox("Automate coupling delay.");
 	optionBoxLayout->addWidget(automateCheckBox);
 	QObject::connect(automateCheckBox, SIGNAL(toggled(bool)), this, SLOT(toggleAutomation(bool)));
 	
 	customlayout->addWidget(bttnBox, 0, 0);
-	//	customlayout->addWidget(optionBox, 2, 0);
 	customlayout->addLayout(optionBoxLayout, 2, 0);
 	setLayout(customlayout);
 }

@@ -83,7 +83,28 @@ class Coupling : public DefaultGUIModel {
 
 		// QT components
 		QPushButton *coupleBttn;
-	
+
+		friend class CouplingEvent;
+		class CouplingEvent : public RT::Event {
+			public:
+				int callback(void) {
+					if (coupled) {
+						parent->mode = Coupling::COUPLED;
+						parent->coupleBttn->setChecked(true);
+					}
+					return 0;
+				}
+				CouplingEvent(Coupling *pt, bool cp) {
+					parent = pt;
+					coupled = cp;
+				}
+
+			private: 
+				Coupling *parent;
+				bool coupled;
+		};
+
+
 	private slots:
 		void startCoupling(bool);
 		void toggleAutomation(bool);
