@@ -1,7 +1,7 @@
 ###Reciprocally Coupled Neurons
 
-**Requirements:** None
-**Limitations:** None
+**Requirements:** None  
+**Limitations:** None  
 
 ![Coupling GUI](coupling.png)
 
